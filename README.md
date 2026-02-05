@@ -2,6 +2,12 @@
 
 A comprehensive Attendance Device Management System (ADMS) server built with PHP and SQLite for managing ZKTeco biometric attendance devices.
 
+## 📚 Documentation
+
+- **[Quick Start Guide](QUICKSTART.md)** - Get started in minutes
+- **[API Reference](API.md)** - Complete API documentation
+- **[Deployment Guide](DEPLOYMENT.md)** - Production deployment options
+
 ## Features
 
 - **Device Management**: Auto-detect, register, and manage ZKTeco biometric devices
@@ -12,6 +18,7 @@ A comprehensive Attendance Device Management System (ADMS) server built with PHP
 - **Duplicate Prevention**: Automatic detection and prevention of duplicate attendance records
 - **Logging**: Comprehensive system and device event logging
 - **SQLite Database**: Lightweight, file-based database for easy deployment
+- **Docker Support**: Easy deployment with Docker and Docker Compose
 
 ## Requirements
 
@@ -20,7 +27,11 @@ A comprehensive Attendance Device Management System (ADMS) server built with PHP
 - PHP sockets extension (php-sockets)
 - Composer (for dependency management)
 
-## Installation
+Or use Docker (no PHP installation required)
+
+## Quick Start
+
+### Option 1: Traditional Installation
 
 1. Clone the repository:
 ```bash
@@ -38,17 +49,24 @@ composer install
 php database/migrate.php
 ```
 
-4. Configure the server (optional):
-Edit `config/config.php` to customize settings:
-- Database path
-- Server host and port
-- API authentication
-- Logging settings
-
-5. Set environment variables (optional):
+4. Start the server:
 ```bash
-export ADMS_API_KEY="your-secure-api-key"
+php -S localhost:8080 -t public
 ```
+
+The server will be available at `http://localhost:8080`
+
+### Option 2: Docker
+
+```bash
+# Set your API key
+export ADMS_API_KEY="your-secure-api-key"
+
+# Start with Docker Compose
+docker-compose up -d
+```
+
+See [QUICKSTART.md](QUICKSTART.md) for detailed setup instructions.
 
 ## Running the Server
 
@@ -60,9 +78,17 @@ php -S localhost:8080 -t public
 
 The server will be available at `http://localhost:8080`
 
+### Using Docker
+
+```bash
+docker-compose up -d
+```
+
 ### Using Apache/Nginx
 
 Point your web server document root to the `public` directory.
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for production deployment options.
 
 Example Apache configuration:
 ```apache
@@ -78,157 +104,44 @@ Example Apache configuration:
 
 ## API Documentation
 
-### Authentication
+For complete API documentation, see **[API.md](API.md)**.
 
-All API requests require authentication using an API key in the header:
+### Quick API Examples
 
-```
-X-API-Key: your-api-key
-```
+All API requests require authentication using an API key:
 
-To disable authentication for development, set `enable_auth` to `false` in `config/config.php`.
-
-### Device Management Endpoints
-
-#### Register a Device
-```http
-POST /api/devices/register
-Content-Type: application/json
-
-{
-    "serial_number": "ABC123456",
-    "device_name": "Main Entrance",
-    "ip_address": "192.168.1.100",
-    "port": 4370,
-    "model": "ZKTeco K40",
-    "branch_id": 1
-}
+```bash
+curl -H "X-API-Key: your-api-key" http://localhost:8080/api/health
 ```
 
-#### Get All Devices
-```http
-GET /api/devices
-GET /api/devices?status=online
+## API Overview
+
+For complete API documentation, see **[API.md](API.md)**.
+
+### Key Endpoints
+
+- **Device Management**: `/api/devices/*`
+- **Attendance**: `/api/attendance/*`
+- **Branch Management**: `/api/branches/*`
+- **Administration**: `/api/admin/*`
+- **Health Check**: `/api/health`
+
+### Quick Example
+
+```bash
+# Register a device
+curl -X POST -H "X-API-Key: change_this_in_production" \
+  -H "Content-Type: application/json" \
+  -d '{"serial_number":"DEV001","device_name":"Main Entrance","ip_address":"192.168.1.100"}' \
+  http://localhost:8080/api/devices/register
 ```
 
-#### Get Device by ID
-```http
-GET /api/devices/{id}
-```
+## Testing
 
-#### Update Device
-```http
-PUT /api/devices/{id}
-Content-Type: application/json
+Run the automated API test suite:
 
-{
-    "device_name": "Updated Name",
-    "ip_address": "192.168.1.101"
-}
-```
-
-#### Delete Device
-```http
-DELETE /api/devices/{id}
-```
-
-### Device Operations Endpoints
-
-#### Sync Attendance
-```http
-POST /api/devices/{id}/sync
-```
-
-#### Restart Device
-```http
-POST /api/devices/{id}/restart
-```
-
-#### Sync Device Time
-```http
-POST /api/devices/{id}/sync-time
-```
-
-#### Shutdown Device
-```http
-POST /api/devices/{id}/shutdown
-```
-
-#### Assign Device to Branch
-```http
-POST /api/devices/{id}/assign-branch
-Content-Type: application/json
-
-{
-    "branch_id": 1
-}
-```
-
-### Attendance Endpoints
-
-#### Get Attendance by Device
-```http
-GET /api/attendance/device/{deviceId}?limit=100&offset=0
-```
-
-#### Get Attendance by User
-```http
-GET /api/attendance/user/{userId}?limit=100&offset=0
-```
-
-#### Get Attendance by Date Range
-```http
-GET /api/attendance/range?start_date=2024-01-01&end_date=2024-01-31&limit=1000
-```
-
-#### Create Attendance Record
-```http
-POST /api/attendance
-Content-Type: application/json
-
-{
-    "device_id": 1,
-    "user_id": "12345",
-    "timestamp": "2024-01-15 09:30:00",
-    "verify_mode": 1,
-    "in_out_mode": 0
-}
-```
-
-### Branch Management Endpoints
-
-#### Get All Branches
-```http
-GET /api/branches
-```
-
-#### Create Branch
-```http
-POST /api/branches
-Content-Type: application/json
-
-{
-    "name": "Main Office",
-    "code": "MO01",
-    "location": "Downtown"
-}
-```
-
-### Administrative Endpoints
-
-#### Get System Logs
-```http
-GET /api/admin/logs/system?limit=100&level=error
-```
-
-#### Get Device Logs
-```http
-GET /api/admin/logs/device/{deviceId}?limit=100
-```
-
-#### Health Check
-```http
-GET /api/health
+```bash
+./test-api.sh
 ```
 
 ## Database Schema
@@ -253,22 +166,21 @@ GET /api/health
 ```
 php-adms-server/
 ├── config/              # Configuration files
-│   └── config.php
-├── database/            # Database files and migrations
-│   └── migrate.php
+├── database/            # Database and migrations
 ├── logs/                # Application logs
-├── public/              # Public web root
-│   └── index.php        # Main entry point
+├── public/              # Web root (index.php)
 ├── src/                 # Source code
-│   ├── API/             # API and routing
+│   ├── API/             # Routing and middleware
 │   ├── Database/        # Database layer
 │   ├── Models/          # Data models
-│   ├── Protocol/        # ADMS protocol implementation
-│   ├── Repositories/    # Data repositories
+│   ├── Protocol/        # ADMS protocol
+│   ├── Repositories/    # Data access
 │   ├── Services/        # Business logic
-│   └── Utilities/       # Utility classes
-├── composer.json
-└── README.md
+│   └── Utilities/       # Helpers and logging
+├── API.md               # API documentation
+├── DEPLOYMENT.md        # Deployment guide
+├── QUICKSTART.md        # Quick start guide
+└── README.md            # This file
 ```
 
 ## Security Considerations

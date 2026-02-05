@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  adms-server:
+    build: .
+    container_name: adms-server
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./database:/app/database
+      - ./logs:/app/logs
+    environment:
+      - ADMS_API_KEY=${ADMS_API_KEY:-change_this_in_production}
+    restart: unless-stopped
+    networks:
+      - adms-network
+
+networks:
+  adms-network:
+    driver: bridge

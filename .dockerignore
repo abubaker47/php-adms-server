@@ -1,0 +1,41 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Dependencies
+vendor/
+
+# Database
+database/*.db
+database/*.sqlite
+
+# Logs
+logs/
+*.log
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tests
+tests/
+test-api.sh
+
+# Documentation (keep essential ones)
+*.md
+!README.md
+
+# Temporary
+tmp/
+temp/
+cache/
