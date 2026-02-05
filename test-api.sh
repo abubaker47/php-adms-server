@@ -47,8 +47,9 @@ echo "1. Health Check"
 test_endpoint "Health Check" "GET" "/api/health"
 
 echo "2. Device Management"
+UNIQUE_ID="TEST_$(date +%s)_$$_$RANDOM"
 test_endpoint "Register Device" "POST" "/api/devices/register" \
-  '{"serial_number":"TEST_'$(date +%s)'","device_name":"Test Device","ip_address":"192.168.1.100","model":"ZKTeco K40"}'
+  "{\"serial_number\":\"$UNIQUE_ID\",\"device_name\":\"Test Device\",\"ip_address\":\"192.168.1.100\",\"model\":\"ZKTeco K40\"}"
 
 test_endpoint "Get All Devices" "GET" "/api/devices"
 
@@ -58,8 +59,9 @@ test_endpoint "Update Device" "PUT" "/api/devices/1" \
   '{"device_name":"Updated Device Name","firmware_version":"v2.4.1"}'
 
 echo "3. Branch Management"
+BRANCH_CODE="TB_$(date +%s)_$$_$RANDOM"
 test_endpoint "Create Branch" "POST" "/api/branches" \
-  '{"name":"Test Branch","code":"TB'$(date +%s)'","location":"Test Location"}'
+  "{\"name\":\"Test Branch\",\"code\":\"$BRANCH_CODE\",\"location\":\"Test Location\"}"
 
 test_endpoint "Get All Branches" "GET" "/api/branches"
 
