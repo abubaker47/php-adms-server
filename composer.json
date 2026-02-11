@@ -1,0 +1,22 @@
+{
+    "name": "abubaker47/php-adms-server",
+    "description": "ADMS (Attendance Device Management System) server for ZKTeco biometric devices",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Abu Baker"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "ADMS\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}
